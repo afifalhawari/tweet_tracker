@@ -1,15 +1,8 @@
 var SaveUtils = require('./SaveUtils');
-var tracked_user = require('./../data/tracked_user');
 
-function trackTweet(client){
-	for(var i=0;i<tracked_user.length;i++){
-		var user = require('./../data/'+tracked_user[i]);
-		if(i==tracked_user.length-1){
-			getTweet(client,user,true);
-		}else{
-			getTweet(client,user,false);
-		}
-	}
+function trackTweet(client, username){
+	var user = require('./../data/'+username);
+	getTweet(client,user)
 }
 
 function getTweet(client,user,last){
@@ -23,9 +16,7 @@ function getTweet(client,user,last){
 			}
 			SaveUtils.saveFile('./data/'+user.username+'.json',user);
 		}
-		if(last){
-			setTimeout(trackTweet(client),5000);	
-		}	
+		setTimeout(trackTweet(client,user.username),5000);		
 	});
 }
 
