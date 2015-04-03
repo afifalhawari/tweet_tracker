@@ -1,25 +1,27 @@
-var tracked_user = require('./../config/tracked_user');
+var SaveUtils = require('./SaveUtils');
+var tracked_user = require('./../data/tracked_user');
 
 function trackTweet(client){
 	for(var i=0;i<tracked_user.length;i++){
+		var user = require('./../data/'+tracked_user[i]);
 		if(i==tracked_user.length-1){
-			getTweet(client,tracked_user[i],true);
+			getTweet(client,user,true);
 		}else{
-			getTweet(client,tracked_user[i],false);	
+			getTweet(client,user,false);
 		}
 	}
 }
 
-function getTweet(client,tracked_user, last){
-	client.get('statuses/user_timeline', {'screen_name' : tracked_user.username, 'since_id' : tracked_user.since_id+1, 'count' : 5 }, function(error,tweets,response){
+function getTweet(client,user,last){
+	client.get('statuses/user_timeline', {'screen_name' : user.username, 'since_id' : user.last_tweet+1, 'count' : 5 }, function(error,tweets,response){
 		if(!error){
-			console.log(tracked_user);
 			for(var j=0;j<tweets.length;j++){
-				processTweet(tracked_user,tweets[j]);			
+				processTweet(user,tweets[j]);			
 			}
 			if(tweets.length>0){
-				tracked_user.since_id = tweets[0].id;
+				user.last_tweet = tweets[0].id;
 			}
+			SaveUtils.saveFile('./data/'+user.username+'.json',user);
 		}
 		if(last){
 			setTimeout(trackTweet(client),5000);	
@@ -27,10 +29,10 @@ function getTweet(client,tracked_user, last){
 	});
 }
 
-function processTweet(tracked_user,tweet){
-	if(tracked_user.since_id<=tweet.id){
+function processTweet(user,tweet){
+	if(user.last_tweet<tweet.id){
 		console.log(tweet.text);
-		tracked_user.tracked_tweet_id.push(tweet.id); 
+		user.tweet_list.push(tweet);
 	}
 }
 
