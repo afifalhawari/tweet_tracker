@@ -1,8 +1,8 @@
-var SaveUtils = require('./SaveUtils');
+var PersistUtils = require('./PersistUtils');
 
 function trackTweet(client, username){
-	var user = require('./../data/'+username);
-	getTweet(client,user)
+	var user = PersistUtils.loadUser(username);
+	getTweet(client,user);
 }
 
 function getTweet(client,user,last){
@@ -14,7 +14,7 @@ function getTweet(client,user,last){
 			if(tweets.length>0){
 				user.last_tweet = tweets[0].id;
 			}
-			SaveUtils.saveFile('./data/'+user.username+'.json',user);
+			PersistUtils.saveFile('./data/'+user.username+'.json',user);
 		}
 		setTimeout(trackTweet(client,user.username),5000);		
 	});

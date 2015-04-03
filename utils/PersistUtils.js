@@ -10,4 +10,9 @@ function saveFile(filename, contents){
 	}); 
 }
 
+function loadUser(username){
+	return require('./../data/'+username);
+}
+
 module.exports.saveFile = saveFile;
+module.exports.loadUser = loadUser;
