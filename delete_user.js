@@ -4,13 +4,11 @@ var tracked_user = require('./data/tracked_user');
 var index = tracked_user.indexOf(process.argv[2]);
 
 if(index==-1){
-	var user = createUser(process.argv[2]);
-	tracked_user.push(process.argv[2]);
-	SaveUtils.saveFile('./data/tracked_user.json',tracked_user);
-	SaveUtils.saveFile('./data/'+process.argv[2]+'.json', user);
-	console.log('user '+process.argv[2]+' successfully added');
+	console.log('user '+process.argv[2]+' is not exists');
 }else{
-	console.log('user '+process.argv[2]+' already exists');
+	tracked_user.splice(index);
+	SaveUtils.saveFile('./data/tracked_user.json',tracked_user);
+	console.log('user '+process.argv[2]+' successfully deleted');
 }
 
 function createUser(username){
